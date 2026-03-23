@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesFlow Pro — Inteligencia Comercial Inmobiliaria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f2f2f7;--surface:#fff;--border:rgba(60,60,67,.1);
+  --t1:#1c1c1e;--t2:#48484a;--t3:#8e8e93;--t4:#aeaeb2;
+  --blue:#007aff;--blue-bg:rgba(0,122,255,.09);--blue-glow:rgba(0,122,255,.35);
+  --green:#34c759;--green-bg:rgba(52,199,89,.1);
+  --orange:#ff9500;--orange-bg:rgba(255,149,0,.1);
+  --red:#ff3b30;--red-bg:rgba(255,59,48,.1);
+  --purple:#af52de;--purple-bg:rgba(175,82,222,.1);
+  --teal:#30b0c7;--teal-bg:rgba(48,176,199,.1);
+  --gold:#ffd60a;--gold-bg:rgba(255,214,10,.12);
+  --sh1:0 1px 3px rgba(0,0,0,.06);
+  --sh2:0 4px 16px rgba(0,0,0,.08);
+  --sh3:0 12px 40px rgba(0,0,0,.11);
+  --sh4:0 28px 80px rgba(0,0,0,.13);
+  --r1:10px;--r2:16px;--r3:22px;--r4:28px;--pill:999px;
+  --f:'DM Sans',-apple-system,sans-serif;
+  --fm:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:300;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(242,242,247,.86);backdrop-filter:blur(28px) saturate(1.8);-webkit-backdrop-filter:blur(28px) saturate(1.8);border-bottom:1px solid var(--border)}
+.nav-brand{font-size:16px;font-weight:700;letter-spacing:-.5px;display:flex;align-items:center;gap:7px}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);animation:pulse-dot 2.5s ease infinite}
+.nav-pill{display:flex;gap:2px;background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:var(--pill);padding:3px;box-shadow:var(--sh1)}
+.nav-tab{padding:5px 16px;border-radius:var(--pill);font-size:13px;font-weight:500;border:none;background:transparent;cursor:pointer;color:var(--t3);transition:all .2s ease}
+.nav-tab.on{background:var(--blue);color:#fff;box-shadow:0 2px 8px var(--blue-glow)}
+.nav-btn{font-size:13px;font-weight:500;color:var(--blue);border:none;background:none;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s}
+.nav-btn.show{opacity:1;pointer-events:auto}
+
+/* LAYOUT */
+.wrap{max-width:1060px;margin:0 auto;padding:74px 20px 80px}
+.page{display:none}.page.on{display:block}
+
+/* HERO */
+.hero{text-align:center;padding:50px 0 42px;animation:up .55s cubic-bezier(.22,.68,0,1.2) both}
+.hero-chip{display:inline-flex;align-items:center;gap:7px;background:var(--blue-bg);border:1px solid rgba(0,122,255,.18);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:5px 14px;border-radius:var(--pill);margin-bottom:22px}
+.chip-blink{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:blink 2s ease infinite}
+h1{font-size:clamp(30px,5.2vw,54px);font-weight:700;letter-spacing:-2px;line-height:1.07;margin-bottom:16px}
+h1 .acc{color:var(--blue)}
+h1 .lt{font-weight:300;font-style:italic}
+.hero-p{font-size:17px;color:var(--t3);line-height:1.6;max-width:460px;margin:0 auto}
+
+/* SECTION LABEL */
+.slabel{font-size:11px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:var(--t4);margin-bottom:12px}
+
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r4);border:1px solid var(--border);box-shadow:var(--sh1);overflow:hidden}
+.card-p{padding:26px}
+.card-h{padding:22px 26px 0;display:flex;align-items:flex-start;justify-content:space-between}
+.card-title{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.card-sub{font-size:12px;color:var(--t3);margin-top:3px}
+
+/* FORM */
+.form-sec{margin-bottom:14px;animation:up .5s .06s ease both}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+.flabel{font-size:12px;font-weight:600;color:var(--t2)}
+.fhint{font-size:11px;color:var(--t4)}
+.fhint.auto{color:var(--blue);font-weight:500}
+.ibox{position:relative;display:flex;align-items:center}
+.ipre,.isuf{position:absolute;font-size:13px;color:var(--t4);font-weight:500;pointer-events:none;z-index:1}
+.ipre{left:13px}.isuf{right:12px}
+input[type=number]{width:100%;padding:11px 40px 11px 30px;font-family:var(--fm);font-size:15px;font-weight:500;color:var(--t1);background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r2);outline:none;transition:all .2s ease;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{display:none}
+input[type=number].auto-field{background:rgba(0,122,255,.05);border-color:rgba(0,122,255,.25);color:var(--blue);font-weight:700;cursor:default}
+input[type=number].comm-field{background:rgba(255,214,10,.07);border-color:rgba(255,214,10,.35)}
+input[type=number]:focus:not(.auto-field){border-color:var(--blue);background:var(--surface);box-shadow:0 0 0 4px rgba(0,122,255,.1)}
+.divr{height:1px;background:var(--border);margin:20px 0}
+.btn-calc{width:100%;padding:15px 24px;background:var(--blue);color:#fff;font-family:var(--f);font-size:15px;font-weight:600;border:none;border-radius:var(--r2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-.2px;transition:all .2s ease}
+.btn-calc:hover{background:#0066dd;transform:translateY(-1px);box-shadow:0 8px 28px var(--blue-glow)}
+.btn-calc:active{transform:translateY(0)}
+.arr{font-size:17px;transition:transform .2s}
+.btn-calc:hover .arr{transform:translateX(4px)}
+
+/* RESULTS */
+#res{display:none}
+
+/* TILES */
+.tiles4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+@media(max-width:700px){.tiles4,.tiles3{grid-template-columns:repeat(2,1fr)}}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r3);padding:18px 16px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;animation:tilein .4s ease both}
+.tile:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.tile::after{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:var(--r3) var(--r3) 0 0}
+.tile.tb::after{background:var(--blue)}
+.tile.tg::after{background:var(--green)}
+.tile.to::after{background:var(--orange)}
+.tile.tr::after{background:var(--red)}
+.tile.tgold::after{background:var(--gold)}
+.tile.tp::after{background:var(--purple)}
+.tile-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px}
+.tb .tile-ico{background:var(--blue-bg)}.tg .tile-ico{background:var(--green-bg)}
+.to .tile-ico{background:var(--orange-bg)}.tr .tile-ico{background:var(--red-bg)}
+.tgold .tile-ico{background:var(--gold-bg)}.tp .tile-ico{background:var(--purple-bg)}
+.tile-lbl{font-size:10px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.tile-val{font-family:var(--fm);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-.8px;line-height:1}
+.tile-desc{font-size:11px;color:var(--t3);margin-top:4px}
+
+/* COMMISSION BOX */
+.comm-box{background:linear-gradient(135deg,#1c1c1e 0%,#2c2c2e 100%);border-radius:var(--r4);padding:26px;margin-bottom:14px;border:1px solid rgba(255,255,255,.07);box-shadow:var(--sh3);position:relative;overflow:hidden}
+.comm-box::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,214,10,.18) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.comm-box::after{content:'';position:absolute;bottom:-60px;left:10%;width:200px;height:200px;background:radial-gradient(circle,rgba(0,122,255,.12) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.comm-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;position:relative}
+.comm-orb{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#b8860b,var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(255,214,10,.35)}
+.comm-title{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.comm-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+.comm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative}
+@media(max-width:600px){.comm-grid{grid-template-columns:1fr 1fr}}
+.comm-stat{background:rgba(255,255,255,.07);border-radius:var(--r2);padding:16px;border:1px solid rgba(255,255,255,.07)}
+.comm-stat-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.comm-stat-val{font-family:var(--fm);font-size:20px;font-weight:500;letter-spacing:-.8px}
+.comm-stat-val.gold{color:var(--gold)}
+.comm-stat-val.wh{color:#fff}
+.comm-stat-val.gr{color:var(--green)}
+.comm-stat-desc{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px}
+
+/* FUNNEL */
+.funnel-row{display:flex;align-items:center;gap:14px;padding:13px 18px;border-bottom:1px solid var(--border);position:relative;transition:background .15s}
+.funnel-row:last-child{border-bottom:none}
+.funnel-row:hover{background:var(--bg)}
+.funnel-bar{position:absolute;left:0;top:0;bottom:0;opacity:.06;transition:width .9s cubic-bezier(.22,.68,0,1.2)}
+.f-ico{font-size:17px;flex-shrink:0;position:relative}
+.f-info{flex:1;position:relative}
+.f-name{font-size:13px;font-weight:600;color:var(--t1)}
+.f-detail{font-size:11px;color:var(--t3);margin-top:2px}
+.f-vals{text-align:right;position:relative;flex-shrink:0}
+.f-main{font-family:var(--fm);font-size:16px;font-weight:500;color:var(--t1)}
+.f-period{font-size:10px;color:var(--t4);margin-top:2px}
+
+/* TWO-COL */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:580px){.twocol{grid-template-columns:1fr}}
+.act-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.act-row:last-child{border-bottom:none}
+.act-l{display:flex;align-items:center;gap:9px}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.act-lbl{font-size:13px;color:var(--t2);font-weight:500}
+.act-r{display:flex;align-items:center;gap:7px}
+.act-val{font-family:var(--fm);font-size:15px;font-weight:500;color:var(--t1)}
+.badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--pill);letter-spacing:.3px;text-transform:uppercase}
+.bd{background:var(--blue-bg);color:var(--blue)}
+.bm{background:var(--green-bg);color:#1a7a34}
+
+/* AI PANEL */
+.ai-panel{border-radius:var(--r4);background:#0d0d0f;border:1px solid rgba(255,255,255,.07);box-shadow:var(--sh4);overflow:hidden;margin-bottom:14px}
+.ai-h{display:flex;align-items:center;gap:14px;padding:22px 26px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.ai-orb{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#0052cc,#007aff);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,122,255,.4)}
+.ai-htitle{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.ai-hsub{font-size:11px;color:rgba(255,255,255,.38);margin-top:2px}
+.ai-body{padding:22px 26px 26px;min-height:100px}
+.ai-ld{display:flex;align-items:center;gap:12px}
+.ai-dots{display:flex;gap:5px}
+.ai-dots span{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:bounce 1.4s ease infinite}
+.ai-dots span:nth-child(2){animation-delay:.18s}
+.ai-dots span:nth-child(3){animation-delay:.36s}
+.ai-lt{font-size:14px;color:rgba(255,255,255,.35)}
+#ai-out{display:none}
+.ab{display:flex;gap:13px;padding:13px 15px;border-radius:var(--r2);margin-bottom:9px;border:1px solid transparent}
+.ab:last-child{margin-bottom:0}
+.ab.danger{background:rgba(255,59,48,.08);border-color:rgba(255,59,48,.22)}
+.ab.warning{background:rgba(255,149,0,.08);border-color:rgba(255,149,0,.22)}
+.ab.success{background:rgba(52,199,89,.08);border-color:rgba(52,199,89,.22)}
+.ab.info{background:rgba(0,122,255,.08);border-color:rgba(0,122,255,.22)}
+.ab-ico{font-size:19px;flex-shrink:0;margin-top:1px}
+.ab-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px}
+.ab-text{font-size:12px;color:rgba(255,255,255,.62);line-height:1.65}
+.ab-text strong{color:rgba(255,255,255,.9);font-weight:600}
+.ai-foot{padding:14px 26px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
+.risk-lbl{font-size:12px;color:rgba(255,255,255,.3);font-weight:500}
+.rbadge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--pill);letter-spacing:.4px}
+.rl{background:var(--green-bg);color:var(--green)}
+.rm{background:var(--orange-bg);color:var(--orange)}
+.rh{background:var(--red-bg);color:var(--red)}
+
+.btn-new{display:block;margin:26px auto 0;width:fit-content;padding:11px 26px;border:1.5px solid var(--border);border-radius:var(--pill);font-family:var(--f);font-size:13px;font-weight:500;color:var(--t2);background:none;cursor:pointer;transition:all .2s}
+.btn-new:hover{border-color:var(--t2);color:var(--t1)}
+
+/* GUIDE */
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:14px}
+.gc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r4);padding:22px;box-shadow:var(--sh1)}
+.gn{width:28px;height:28px;border-radius:8px;background:var(--blue-bg);color:var(--blue);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.gc h3{font-size:14px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+.gc p{font-size:13px;color:var(--t3);line-height:1.6}
+.fc{background:#0d0d0f;border-radius:var(--r4);padding:22px 26px;border:1px solid rgba(255,255,255,.06)}
+.fc h3{font-size:14px;font-weight:700;color:#fff;margin-bottom:14px}
+.frm{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:12px}
+.frm:last-child{border-bottom:none}
+.fk{color:rgba(255,255,255,.45)}
+.fv{font-family:var(--fm);color:rgba(255,255,255,.8);font-size:11px}
+
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tilein{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes bounce{0%,80%,100%{transform:scale(0);opacity:.5}40%{transform:scale(1);opacity:1}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.ra{animation:up .45s ease both}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><span class="nav-dot"></span>SalesFlow Pro</div>
+  <div class="nav-pill">
+    <button class="nav-tab on" onclick="goTab('calc',this)">Calculadora</button>
+    <button class="nav-tab" onclick="goTab('guide',this)">Guía</button>
+  </div>
+  <button class="nav-btn" id="nav-btn" onclick="resetAll()">↩ Reiniciar</button>
+</nav>
+
+<!-- CALC PAGE -->
+<div class="page on" id="page-calc">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-chip"><div class="chip-blink"></div>Motor Comercial Inmobiliario</div>
+    <h1>Tu plan de ventas,<br><span class="acc">calculado al detalle.</span></h1>
+    <p class="hero-p">Ingresa tu meta y las unidades — el precio por inmueble se calcula solo. Descubre leads, asesores, comisiones e inversión total.</p>
+  </div>
+
+  <div class="form-sec">
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-title">Parámetros del Proyecto</div><div class="card-sub">El precio por inmueble y las comisiones se calculan automáticamente</div></div>
+    </div>
+    <div class="card-p">
+
+      <div class="slabel" style="margin-bottom:14px">📐 Datos del proyecto</div>
+      <div class="fgrid">
+        <div class="field">
+          <div class="flabel">Meta de venta total</div>
+          <div class="ibox"><span class="ipre">$</span>
+            <input type="number" id="f-meta" value="10000000" min="1" oninput="autoCalc()">
+          <span class="isuf">USD</span></div>
+        </div>
+        <div class="field">
+          <div class="flabel">Número de unidades</div>
+          <div class="ibox"><span class="ipre">#</span>
+            <input type="number" id="f-uni" value="100" min="1" oninput="autoCalc()">
+          <span class="isuf">uds</span></div>
+        </div>
+        <div class="field">
+          <div class="flabel">Precio por inmueble</div>
+          <div class="ibox"><span class="ipre">$</span>
+            <input type="number" id="f-precio" class="auto-field" readonly>
+          <span class="isuf" style="color:var(--blue);font-weight:700;font-size:11px">AUTO</span></div>
+          <div class="fhint auto">⚡ Meta ÷ Unidades</div>
+        </div>
+        <div class="field">
+          <div class="flabel">Plazo para vender todo</div>
+          <div class="ibox"><span class="ipre">#</span>
+            <input type="number" id="f-meses" value="12" min="1" max="120">
+          <span class="isuf">mes</span></div>
+        </div>
+      </div>
+
+      <div class="divr"></div>
+      <div class="slabel" style="margin-bottom:14px">📣 Marketing y Ventas</div>
+      <div class="fgrid">
+        <div class="field">
+          <div class="flabel">Costo por Lead (CPL)</div>
+          <div class="ibox"><span class="ipre">$</span>
+            <input type="number" id="f-cpl" value="5" min="0.5" step="0.5">
+          <span class="isuf">USD</span></div>
+          <div class="fhint">Costo promedio por contacto interesado</div>
+        </div>
+        <div class="field">
+          <div class="flabel">Tasa de cierre (%)</div>
+          <div class="ibox"><span class="ipre">%</span>
+            <input type="number" id="f-tasa" value="1.125" min="0.01" step="0.1" style="padding-left:30px">
+          </div>
+          <div class="fhint">Lead → Venta. Estándar inmobiliario: 1–3%</div>
+        </div>
+        <div class="field">
+          <div class="flabel">Capacidad asesor / día</div>
+          <div class="ibox"><span class="ipre">#</span>
+            <input type="number" id="f-cap" value="15" min="5" max="60">
+          </div>
+          <div class="fhint">Conversaciones nuevas diarias por asesor</div>
+        </div>
+      </div>
+
+      <div class="divr"></div>
+      <div class="slabel" style="margin-bottom:14px">💰 Comisiones</div>
+      <div class="fgrid">
+        <div class="field">
+          <div class="flabel">Mi porcentaje de comisión</div>
+          <div class="ibox"><span class="ipre">%</span>
+            <input type="number" id="f-comm" value="3" min="0.1" step="0.25" class="comm-field" style="padding-left:30px" oninput="autoCalc()">
+          </div>
+          <div class="fhint">% que recibes sobre el valor de cada venta</div>
+        </div>
+        <div class="field">
+          <div class="flabel">Comisión por unidad vendida</div>
+          <div class="ibox"><span class="ipre">$</span>
+            <input type="number" id="f-comm-unit" class="auto-field" readonly>
+          <span class="isuf" style="color:var(--blue);font-weight:700;font-size:11px">AUTO</span></div>
+          <div class="fhint auto">⚡ Precio × comisión%</div>
+        </div>
+        <div class="field">
+          <div class="flabel">Comisión total del proyecto</div>
+          <div class="ibox"><span class="ipre">$</span>
+            <input type="number" id="f-comm-total" class="auto-field" readonly>
+          <span class="isuf" style="color:var(--blue);font-weight:700;font-size:11px">AUTO</span></div>
+          <div class="fhint auto">⚡ Meta × comisión%</div>
+        </div>
+      </div>
+
+      <div style="height:20px"></div>
+      <button class="btn-calc" onclick="calcular()">Calcular mi plan de ventas completo <span class="arr">→</span></button>
+    </div>
+  </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="res">
+
+    <div class="slabel ra" style="animation-delay:.04s">Métricas Operativas</div>
+    <div class="tiles4">
+      <div class="tile tb" style="animation-delay:.07s">
+        <div class="tile-ico">💰</div>
+        <div class="tile-lbl">Publicidad / mes</div>
+        <div class="tile-val" id="t-pub">—</div>
+        <div class="tile-desc" id="t-cac">CAC: —</div>
+      </div>
+      <div class="tile tg" style="animation-delay:.11s">
+        <div class="tile-ico">🏠</div>
+        <div class="tile-lbl">Ventas / mes</div>
+        <div class="tile-val" id="t-ven">—</div>
+        <div class="tile-desc" id="t-ven2">—</div>
+      </div>
+      <div class="tile to" style="animation-delay:.15s">
+        <div class="tile-ico">🎯</div>
+        <div class="tile-lbl">Leads / mes</div>
+        <div class="tile-val" id="t-leads">—</div>
+        <div class="tile-desc" id="t-leads2">—</div>
+      </div>
+      <div class="tile tr" style="animation-delay:.19s">
+        <div class="tile-ico">👥</div>
+        <div class="tile-lbl">Asesores</div>
+        <div class="tile-val" id="t-asesores">—</div>
+        <div class="tile-desc">equipo requerido</div>
+      </div>
+    </div>
+
+    <div class="tiles3">
+      <div class="tile tb" style="animation-delay:.22s">
+        <div class="tile-ico">🏷️</div>
+        <div class="tile-lbl">Precio por inmueble</div>
+        <div class="tile-val" id="t-precio">—</div>
+        <div class="tile-desc">valor unitario calculado</div>
+      </div>
+      <div class="tile tr" style="animation-delay:.26s">
+        <div class="tile-ico">📊</div>
+        <div class="tile-lbl">Inversión publicitaria total</div>
+        <div class="tile-val" id="t-inv-total">—</div>
+        <div class="tile-desc" id="t-inv-desc">para todo el proyecto</div>
+      </div>
+      <div class="tile tgold" style="animation-delay:.30s">
+        <div class="tile-ico">⭐</div>
+        <div class="tile-lbl">Comisión total</div>
+        <div class="tile-val" id="t-comm-res">—</div>
+        <div class="tile-desc" id="t-comm-desc">si vendes todo</div>
+      </div>
+    </div>
+
+    <!-- COMMISSION BOX -->
+    <div class="slabel ra" style="animation-delay:.33s">💎 Proyección de Comisiones</div>
+    <div class="comm-box ra" style="animation-delay:.35s">
+      <div class="comm-head">
+        <div class="comm-orb">💎</div>
+        <div><div class="comm-title">Tu ingreso por comisiones</div><div class="comm-sub">Basado en el volumen total de venta del proyecto</div></div>
+      </div>
+      <div class="comm-grid" id="comm-grid"></div>
+    </div>
+
+    <!-- FUNNEL -->
+    <div class="slabel ra" style="animation-delay:.38s">Embudo Comercial Completo</div>
+    <div class="card ra" style="animation-delay:.40s;margin-bottom:14px">
+      <div id="funnel"></div>
+    </div>
+
+    <!-- TWO COL -->
+    <div class="twocol ra" style="animation-delay:.44s">
+      <div class="card">
+        <div class="card-h" style="padding-bottom:0"><div class="card-title" style="font-size:14px">Actividad diaria · por asesor</div></div>
+        <div class="card-p" style="padding-top:14px" id="col-day"></div>
+      </div>
+      <div class="card">
+        <div class="card-h" style="padding-bottom:0"><div class="card-title" style="font-size:14px">Resumen mensual del equipo</div></div>
+        <div class="card-p" style="padding-top:14px" id="col-mon"></div>
+      </div>
+    </div>
+
+    <!-- AI -->
+    <div class="slabel ra" style="animation-delay:.48s">🧠 Diagnóstico de Cuello de Botella</div>
+    <div class="ai-panel ra" style="animation-delay:.50s">
+      <div class="ai-h">
+        <div class="ai-orb">🧠</div>
+        <div>
+          <div class="ai-htitle">Diagnóstico Comercial IA</div>
+          <div class="ai-hsub">Análisis de riesgo y palancas de mejora · SalesFlow Pro</div>
+        </div>
+      </div>
+      <div class="ai-body">
+        <div class="ai-ld" id="ai-ld">
+          <div class="ai-dots"><span></span><span></span><span></span></div>
+          <div class="ai-lt">Analizando tu plan comercial…</div>
+        </div>
+        <div id="ai-out"></div>
+      </div>
+      <div class="ai-foot" id="ai-foot" style="display:none">
+        <div class="risk-lbl">Nivel de riesgo:</div>
+        <div class="rbadge" id="rbadge"></div>
+      </div>
+    </div>
+
+    <button class="btn-new" onclick="resetAll()">↩ Nueva simulación</button>
+  </div>
+
+</div>
+</div>
+
+<!-- GUIDE PAGE -->
+<div class="page" id="page-guide">
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-chip"><div class="chip-blink"></div>Documentación</div>
+    <h1>Cómo funciona<br><span class="acc lt">SalesFlow Pro</span></h1>
+    <p class="hero-p">Cada fórmula, cada métrica y cómo leer el diagnóstico para tomar decisiones con claridad.</p>
+  </div>
+  <div class="guide-grid">
+    <div class="gc"><div class="gn">1</div><h3>Precio automático</h3><p>Ingresa la meta total y el número de unidades. El precio por inmueble se divide automáticamente. No necesitas calcularlo manualmente.</p></div>
+    <div class="gc"><div class="gn">2</div><h3>Comisiones automáticas</h3><p>Agrega tu porcentaje de comisión y el sistema calcula cuánto ganarás por unidad, cuánto mensualmente y el total si vendes todo el proyecto.</p></div>
+    <div class="gc"><div class="gn">3</div><h3>Inversión total</h3><p>El sistema calcula la publicidad mensual (0.5% del precio × ventas/mes) y la multiplica por el plazo para mostrarte el presupuesto total requerido.</p></div>
+    <div class="gc"><div class="gn">4</div><h3>Diagnóstico IA</h3><p>La IA analiza tu plan completo y detecta dónde está el mayor riesgo de falla — presupuesto, tasa de cierre, asesores — con acciones concretas.</p></div>
+  </div>
+  <div class="fc">
+    <h3>Fórmulas del Motor</h3>
+    <div class="frm"><span class="fk">Precio por inmueble</span><span class="fv">Meta ÷ Unidades</span></div>
+    <div class="frm"><span class="fk">CAC (Costo Adquisición)</span><span class="fv">Precio × 0.5%</span></div>
+    <div class="frm"><span class="fk">Publicidad mensual</span><span class="fv">CAC × Ventas/mes</span></div>
+    <div class="frm"><span class="fk">Inversión publicitaria total</span><span class="fv">Publicidad/mes × Plazo</span></div>
+    <div class="frm"><span class="fk">Ventas/mes requeridas</span><span class="fv">⌈ Unidades ÷ Plazo ⌉</span></div>
+    <div class="frm"><span class="fk">Leads mensuales</span><span class="fv">⌈ Ventas/mes ÷ Tasa cierre ⌉</span></div>
+    <div class="frm"><span class="fk">Leads diarios</span><span class="fv">⌈ Leads/mes ÷ 26 días hábiles ⌉</span></div>
+    <div class="frm"><span class="fk">Asesores requeridos</span><span class="fv">⌈ Leads/día ÷ Cap. asesor ⌉</span></div>
+    <div class="frm"><span class="fk">Comisión por unidad</span><span class="fv">Precio × (comisión% ÷ 100)</span></div>
+    <div class="frm"><span class="fk">Comisión total proyecto</span><span class="fv">Meta × (comisión% ÷ 100)</span></div>
+    <div class="frm"><span class="fk">Comisión mensual</span><span class="fv">Comisión/unidad × Ventas/mes</span></div>
+  </div>
+</div>
+</div>
+
+<script>
+const G=id=>document.getElementById(id);
+const ceil=Math.ceil;
+const fmt=(n,d=0)=>new Intl.NumberFormat('es-DO',{maximumFractionDigits:d}).format(n);
+const money=n=>n>=1e6?'$'+fmt(n/1e6,2)+'M':n>=1e3?'$'+fmt(n/1e3,1)+'K':'$'+fmt(n,0);
+
+function autoCalc(){
+  const meta=+G('f-meta').value||0;
+  const uni=+G('f-uni').value||1;
+  const comm=+G('f-comm').value||0;
+  const precio=uni>0?meta/uni:0;
+  G('f-precio').value=Math.round(precio);
+  G('f-comm-unit').value=Math.round(precio*comm/100);
+  G('f-comm-total').value=Math.round(meta*comm/100);
+}
+autoCalc();
+
+function goTab(tab,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('on'));
+  G('page-'+tab).classList.add('on');
+  btn.classList.add('on');
+}
+
+function resetAll(){
+  G('res').style.display='none';
+  G('nav-btn').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function calcular(){
+  const meta=+G('f-meta').value;
+  const uni=+G('f-uni').value;
+  const meses=+G('f-meses').value;
+  const cpl=+G('f-cpl').value;
+  const tasaPct=+G('f-tasa').value;
+  const cap=+G('f-cap').value;
+  const commPct=+G('f-comm').value;
+
+  const tasa=tasaPct/100;
+  const precio=meta/uni;
+  const cac=precio*0.005;
+  const ventasMes=ceil(uni/meses);
+  const pubMes=cac*ventasMes;
+  const invTotal=pubMes*meses;
+  const leadsMes=ceil(ventasMes/tasa);
+  const leadsDia=ceil(leadsMes/26);
+  const convsDia=leadsDia;
+  const seguiDia=convsDia*2;
+  const presDia=Math.max(1,ceil(ventasMes/26));
+  const asesores=Math.max(1,ceil(convsDia/cap));
+  const ingMes=ventasMes*precio;
+  const commUnit=precio*commPct/100;
+  const commTotal=meta*commPct/100;
+  const commMes=commUnit*ventasMes;
+
+  G('t-pub').textContent=money(pubMes);
+  G('t-cac').textContent='CAC: $'+fmt(cac)+' / venta';
+  G('t-ven').textContent=fmt(ventasMes);
+  G('t-ven2').textContent='en '+meses+' mes'+(meses>1?'es':'');
+  G('t-leads').textContent=fmt(leadsMes);
+  G('t-leads2').textContent=fmt(leadsDia)+' leads/día';
+  G('t-asesores').textContent=fmt(asesores);
+  G('t-precio').textContent=money(precio);
+  G('t-inv-total').textContent=money(invTotal);
+  G('t-inv-desc').textContent='en '+meses+' meses de pauta';
+  G('t-comm-res').textContent=money(commTotal);
+  G('t-comm-desc').textContent=commPct+'% sobre '+money(meta);
+
+  G('comm-grid').innerHTML=`
+    <div class="comm-stat">
+      <div class="comm-stat-lbl">Por unidad vendida</div>
+      <div class="comm-stat-val gold">${money(commUnit)}</div>
+      <div class="comm-stat-desc">${commPct}% de ${money(precio)}</div>
+    </div>
+    <div class="comm-stat">
+      <div class="comm-stat-lbl">Comisión mensual</div>
+      <div class="comm-stat-val wh">${money(commMes)}</div>
+      <div class="comm-stat-desc">${fmt(ventasMes)} ventas/mes × ${money(commUnit)}</div>
+    </div>
+    <div class="comm-stat">
+      <div class="comm-stat-lbl">Total si vendes todo</div>
+      <div class="comm-stat-val gr">${money(commTotal)}</div>
+      <div class="comm-stat-desc">${fmt(uni)} unidades × ${commPct}%</div>
+    </div>`;
+
+  const steps=[
+    {ico:'📣',col:'#007aff',name:'Pauta publicitaria',detail:'Inversión mensual en ads pagados',main:money(pubMes),per:'/ mes'},
+    {ico:'🎯',col:'#34c759',name:'Leads captados',detail:'Contactos interesados generados',main:fmt(leadsMes),per:'/ mes — '+fmt(leadsDia)+'/día'},
+    {ico:'💬',col:'#ff9500',name:'Conversaciones nuevas',detail:'Primeros contactos del asesor',main:fmt(convsDia),per:'/ día'},
+    {ico:'🔄',col:'#af52de',name:'Seguimientos activos',detail:'Leads en pipeline activo',main:fmt(seguiDia),per:'/ día'},
+    {ico:'📊',col:'#30b0c7',name:'Presentaciones',detail:'Demo o visita al proyecto',main:fmt(presDia),per:'/ día'},
+    {ico:'🏆',col:'#007aff',name:'Cierres de venta',detail:'Contratos firmados — meta mensual',main:fmt(ventasMes),per:'/ mes'},
+  ];
+  const mx=leadsMes;
+  G('funnel').innerHTML=steps.map((s,i)=>{
+    const nv=[pubMes,leadsMes,convsDia*26,seguiDia*26,presDia*26,ventasMes][i];
+    const pct=Math.max(10,Math.min(100,(nv/mx)*100));
+    return `<div class="funnel-row" style="animation:up .35s ${.05*i}s ease both">
+      <div class="funnel-bar" style="background:${s.col};width:${pct}%"></div>
+      <div class="f-ico">${s.ico}</div>
+      <div class="f-info"><div class="f-name">${s.name}</div><div class="f-detail">${s.detail}</div></div>
+      <div class="f-vals"><div class="f-main">${s.main}</div><div class="f-period">${s.per}</div></div>
+    </div>`;
+  }).join('');
+
+  const ar=(c,l,v,b)=>`<div class="act-row"><div class="act-l"><div class="act-dot" style="background:${c}"></div><div class="act-lbl">${l}</div></div><div class="act-r"><div class="act-val">${v}</div><div class="badge ${b==='d'?'bd':'bm'}">${b==='d'?'día':'mes'}</div></div></div>`;
+  G('col-day').innerHTML=[
+    ar('#007aff','Leads a gestionar',fmt(ceil(leadsDia/asesores)),'d'),
+    ar('#ff9500','Conv. nuevas',fmt(ceil(convsDia/asesores)),'d'),
+    ar('#af52de','Seguimientos',fmt(ceil(seguiDia/asesores)),'d'),
+    ar('#30b0c7','Presentaciones',fmt(Math.max(1,ceil(presDia/asesores))),'d'),
+  ].join('');
+  G('col-mon').innerHTML=[
+    ar('#34c759','Cierres meta',fmt(ventasMes),'m'),
+    ar('#007aff','Leads totales',fmt(leadsMes),'m'),
+    ar('#ff3b30','Inversión publicidad',money(pubMes),'m'),
+    ar('#ffd60a','Comisión ganada',money(commMes),'m'),
+  ].join('');
+
+  G('res').style.display='block';
+  G('nav-btn').classList.add('show');
+  setTimeout(()=>G('res').scrollIntoView({behavior:'smooth',block:'start'}),80);
+
+  callAI({meta,uni,precio,meses,cac,ventasMes,pubMes,invTotal,leadsMes,leadsDia,cpl,tasaPct,tasa,asesores,convsDia,seguiDia,presDia,commPct,commUnit,commMes,commTotal,ingMes,cap});
+}
+
+async function callAI(d){
+  G('ai-ld').style.display='flex';
+  G('ai-out').style.display='none';
+  G('ai-out').innerHTML='';
+  G('ai-foot').style.display='none';
+
+  const prompt=`Eres el mejor consultor de ventas inmobiliarias del mundo hispanohablante, con 20+ años de experiencia. Tu misión: analizar este plan comercial, detectar cuellos de botella y dar recomendaciones brutalmente honestas y accionables.
+
+DATOS DEL PLAN:
+• Meta total: $${d.meta.toLocaleString()} USD | Unidades: ${d.uni} | Precio unitario: $${Math.round(d.precio).toLocaleString()} USD
+• Plazo: ${d.meses} meses | Ventas requeridas: ${d.ventasMes}/mes
+• CAC (0.5%): $${Math.round(d.cac).toLocaleString()} | Publicidad/mes: $${Math.round(d.pubMes).toLocaleString()} | Total pauta: $${Math.round(d.invTotal).toLocaleString()}
+• CPL: $${d.cpl} | Tasa de cierre: ${d.tasaPct}% | Leads/mes: ${d.leadsMes} | Leads/día: ${d.leadsDia}
+• Asesores: ${d.asesores} (cap. ${d.cap} conv/día c/u) | Conv/día: ${d.convsDia} | Seguimientos/día: ${d.seguiDia}
+• Comisión: ${d.commPct}% | Por unidad: $${Math.round(d.commUnit).toLocaleString()} | Mensual: $${Math.round(d.commMes).toLocaleString()} | Total: $${Math.round(d.commTotal).toLocaleString()}
+
+BENCHMARKS SECTORIALES: Tasa cierre sana: 1–3%. CPL inmobiliario real: $8–$25. Asesor sostenible: 10–20 conv/día. Ratio leads:cierres sano: 33:1 a 100:1.
+
+RESPONDE ÚNICAMENTE CON ESTE HTML EXACTO, sin texto adicional:
+
+<div class="ab danger">
+<div class="ab-ico">🚨</div>
+<div><div class="ab-title">CUELLO DE BOTELLA #1: [nombre específico]</div><div class="ab-text">Análisis directo con número concreto del plan. <strong>Dato específico.</strong> Consecuencia real y qué cambiar exactamente.</div></div>
+</div>
+<div class="ab warning">
+<div class="ab-ico">⚠️</div>
+<div><div class="ab-title">RIESGO SECUNDARIO: [nombre]</div><div class="ab-text">Segunda debilidad detectada. <strong>Dato del plan.</strong> Impacto y corrección concreta.</div></div>
+</div>
+<div class="ab info">
+<div class="ab-ico">🔍</div>
+<div><div class="ab-title">ANÁLISIS DE EQUIPO Y EMBUDO</div><div class="ab-text">Evalúa los ${d.asesores} asesores, el ritmo de presentaciones y las proporciones del embudo. <strong>Con números específicos del plan.</strong></div></div>
+</div>
+<div class="ab success">
+<div class="ab-ico">✅</div>
+<div><div class="ab-title">MAYOR PALANCA DE MEJORA</div><div class="ab-text">Una acción que más impacto tendría. <strong>Con métrica objetivo específica.</strong></div></div>
+</div>
+<div class="ab info">
+<div class="ab-ico">🎯</div>
+<div><div class="ab-title">PLAN DE ACCIÓN PRIORITARIO</div><div class="ab-text"><strong>1.</strong> Primera acción con resultado esperado. <strong>2.</strong> Segunda acción. <strong>3.</strong> Tercera acción concreta.</div></div>
+</div>
+<span id="risk-level">BAJO|MEDIO|ALTO</span>
+
+Pon el nivel correcto entre las barras. Máximo 55 palabras por bloque. Sé directo y usa los datos del plan.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1200,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error '+res.status)}
+    const data=await res.json();
+    const raw=(data.content||[]).map(b=>b.text||'').join('');
+    const rm=raw.match(/<span id="risk-level">(.*?)<\/span>/);
+    const rv=rm?rm[1].trim():'MEDIO';
+    const clean=raw.replace(/<span id="risk-level">.*?<\/span>/g,'').trim();
+    G('ai-ld').style.display='none';
+    G('ai-out').style.display='block';
+    G('ai-out').innerHTML=clean;
+    G('ai-out').style.animation='fadein .4s ease both';
+    const rb=G('rbadge');
+    rb.textContent=rv;
+    rb.className='rbadge '+({BAJO:'rl',MEDIO:'rm',ALTO:'rh'}[rv]||'rm');
+    G('ai-foot').style.display='flex';
+  }catch(e){
+    G('ai-ld').style.display='none';
+    G('ai-out').style.display='block';
+    G('ai-out').innerHTML=`<div class="ab warning"><div class="ab-ico">🔌</div><div><div class="ab-title">El diagnóstico IA requiere configuración de servidor</div><div class="ab-text">Las llamadas directas a la API de Anthropic desde el navegador están bloqueadas por CORS (política de seguridad del navegador). <strong>Para activar el diagnóstico IA:</strong> despliega la app en un servidor con un proxy backend, o usa plataformas como Railway, Render o Vercel con una función serverless que haga la llamada a la API. Todos los cálculos del tablero son 100% funcionales.</div></div></div>`;
+  }
+}
+</script>
+</body>
+</html>
